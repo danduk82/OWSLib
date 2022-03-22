@@ -25,7 +25,7 @@ GML_NAMESPACES = (
 
 
 def get_schema(
-    url, typename, version="1.0.0", timeout=30, headers=None, username=None, password=None, auth=None
+    url, typename, version="1.0.0", timeout=30, headers=None, username=None, password=None, auth=None, additional_params=None
 ):
     """Parses DescribeFeatureType response and creates schema compatible
     with :class:`fiona`
@@ -45,7 +45,7 @@ def get_schema(
             auth.password = password
     else:
         auth = Authentication(username, password)
-    url = _get_describefeaturetype_url(url, version, typename)
+    url = _get_describefeaturetype_url(url, version, typename, additional_params)
     root = _get_remote_describefeaturetype(url, timeout=timeout,
                                            headers=headers, auth=auth)
 
@@ -139,7 +139,7 @@ def _construct_schema(elements, nsmap):
         return None
 
 
-def _get_describefeaturetype_url(url, version, typename):
+def _get_describefeaturetype_url(url, version, typename, additional_params=None):
     """Get url for describefeaturetype request
 
     :return str: url
@@ -159,6 +159,15 @@ def _get_describefeaturetype_url(url, version, typename):
         query_string.append(("version", version))
 
     query_string.append(("typeName", typename))
+
+    if additional_params:
+        if not isinstance(additional_params, dict):
+            raise ValueError(
+                "additional_params ('%s'), expected 'dict()'" % additional_params
+            )
+        for param_key, param_value in additional_params.items():
+            if param_key not in params:
+                query_string.append((param_key, param_value))
 
     urlqs = urlencode(tuple(query_string))
     return url.split("?")[0] + "?" + urlqs

@@ -338,7 +338,7 @@ class WebFeatureService_1_0_0(object):
         Get layer schema compatible with :class:`fiona` schema object
         """
 
-        return get_schema(self.url, typename, self.version, auth=self.auth)
+        return get_schema(self.url, typename, self.version, auth=self.auth, additional_params=self.additional_params)
 
 
 class ServiceIdentification(object):

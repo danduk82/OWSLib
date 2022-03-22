@@ -66,7 +66,7 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         auth=None,
         additional_params=None,
     ):
-        """overridden __new__ method
+        """ overridden __new__ method
 
         @type url: string
         @param url: url of WFS capabilities document
