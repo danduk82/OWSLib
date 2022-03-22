@@ -146,7 +146,7 @@ class WebFeatureService_1_0_0(object):
             self.version,
             headers=self.headers,
             auth=self.auth,
-            additional_params=self.additional_params,
+            additional_params=additional_params,
         )
         if xml:
             self._capabilities = reader.readString(xml)
@@ -299,8 +299,15 @@ class WebFeatureService_1_0_0(object):
 
         data = urlencode(request)
         log.debug("Making request: %s?%s" % (base_url, data))
-        u = openURL(base_url, data, method, timeout=self.timeout,
-                    headers=self.headers, auth=self.auth)
+        u = openURL(
+                base_url,
+                data,
+                method,
+                timeout=self.timeout,
+                headers=self.headers,
+                auth=self.auth,
+                additional_params=self.additional_params
+            )
 
         # check for service exceptions, rewrap, and return
         # We're going to assume that anything with a content-length > 32k

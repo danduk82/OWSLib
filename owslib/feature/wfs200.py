@@ -86,7 +86,7 @@ class WebFeatureService_2_0_0(WebFeatureService_):
             username=username,
             password=password,
             auth=auth,
-            additional_params=self.additional_params,
+            additional_params=additional_params,
         )
         return obj
 
@@ -335,7 +335,15 @@ class WebFeatureService_2_0_0(WebFeatureService_):
                 startindex,
                 sortby)
 
-        u = openURL(url, data, method, timeout=self.timeout, headers=self.headers, auth=self.auth)
+        u = openURL(
+                url,
+                data,
+                method,
+                timeout=self.timeout,
+                headers=self.headers,
+                auth=self.auth,
+                additional_params=self.additional_params
+            )
 
         # check for service exceptions, rewrap, and return
         # We're going to assume that anything with a content-length > 32k
