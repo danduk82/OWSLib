@@ -57,6 +57,7 @@ class WebFeatureService_2_0_0(WebFeatureService_):
         username=None,
         password=None,
         auth=None,
+        additional_params=None,
     ):
         """ overridden __new__ method
 
@@ -71,6 +72,7 @@ class WebFeatureService_2_0_0(WebFeatureService_):
         @param username: service authentication username
         @param password: service authentication password
         @param auth: instance of owslib.util.Authentication
+        @param additional_params: Dict() key/value pairs for optional request parameters
         @return: initialized WebFeatureService_2_0_0 object
         """
         obj = object.__new__(self)
@@ -84,6 +86,7 @@ class WebFeatureService_2_0_0(WebFeatureService_):
             username=username,
             password=password,
             auth=auth,
+            additional_params=self.additional_params,
         )
         return obj
 
@@ -105,6 +108,7 @@ class WebFeatureService_2_0_0(WebFeatureService_):
         username=None,
         password=None,
         auth=None,
+        additional_params=None,
     ):
         """Initialize."""
         if auth:
@@ -121,7 +125,13 @@ class WebFeatureService_2_0_0(WebFeatureService_):
         self.timeout = timeout
         self.headers = headers
         self._capabilities = None
-        reader = WFSCapabilitiesReader(self.version, headers=self.headers, auth=self.auth)
+        self.additional_params = additional_params
+        reader = WFSCapabilitiesReader(
+            self.version,
+            headers=self.headers,
+            auth=self.auth,
+            additional_params=self.additional_params,
+        )
         if xml:
             self._capabilities = reader.readString(xml)
         else:
@@ -206,8 +216,11 @@ class WebFeatureService_2_0_0(WebFeatureService_):
         NOTE: this is effectively redundant now"""
         reader = WFSCapabilitiesReader(self.version, auth=self.auth)
         return openURL(
-            reader.capabilities_url(self.url), timeout=self.timeout,
-            headers=self.headers, auth=self.auth
+            reader.capabilities_url(self.url),
+            timeout=self.timeout,
+            headers=self.headers,
+            auth=self.auth,
+            additional_params=self.additional_params,
         )
 
     def items(self):
