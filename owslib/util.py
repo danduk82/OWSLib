@@ -143,8 +143,20 @@ class ResponseWrapper(object):
     # @TODO: __getattribute__ for poking at response
 
 
-def openURL(url_base, data=None, method='Get', cookies=None, username=None, password=None, timeout=30, headers=None,
-            verify=True, cert=None, auth=None):
+def openURL(
+    url_base,
+    data=None,
+    method="Get",
+    cookies=None,
+    username=None,
+    password=None,
+    timeout=30,
+    headers=None,
+    verify=True,
+    cert=None,
+    auth=None,
+    additional_params=None,
+):
     """
     Function to open URLs.
 
@@ -157,6 +169,7 @@ def openURL(url_base, data=None, method='Get', cookies=None, username=None, pass
     :param cert: (optional) A file with a client side certificate for SSL authentication
                  to send with the :class:`Request`.
     :param auth: Instance of owslib.util.Authentication
+    :param additional_params: Dict() key/value pairs for optional request parameters
     """
 
     headers = headers if headers is not None else {}

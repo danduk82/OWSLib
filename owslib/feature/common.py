@@ -8,7 +8,15 @@ class WFSCapabilitiesReader(object):
     """Read and parse capabilities document into a lxml.etree infoset
     """
 
-    def __init__(self, version="1.0", username=None, password=None, headers=None, auth=None):
+    def __init__(
+        self,
+        version="1.0",
+        username=None,
+        password=None,
+        headers=None,
+        auth=None,
+        additional_params=None,
+    ):
         """Initialize"""
         self.headers = headers
         if auth:
@@ -19,6 +27,7 @@ class WFSCapabilitiesReader(object):
         self.auth = auth or Authentication(username, password)
         self.version = version
         self._infoset = None
+        self.additional_params = additional_params
 
     def capabilities_url(self, service_url):
         """Return a capabilities url
@@ -36,6 +45,14 @@ class WFSCapabilitiesReader(object):
         if "version" not in params:
             qs.append(("version", self.version))
 
+        if self.additional_params:
+            if not isinstance(self.additional_params, dict):
+                raise ValueError(
+                    "additional_params ('%s'), expected 'dict()'" % self.additional_params
+                )
+            for param_key, param_value in self.additional_params.items():
+                qs.append((param_key, param_value))
+
         urlqs = urlencode(tuple(qs))
         return service_url.split("?")[0] + "?" + urlqs
 
@@ -51,7 +68,7 @@ class WFSCapabilitiesReader(object):
             A timeout value (in seconds) for the request.
         """
         request = self.capabilities_url(url)
-        u = openURL(request, timeout=timeout, headers=self.headers, auth=self.auth)
+        u = openURL(request, timeout=timeout, headers=self.headers, auth=self.auth, additional_params=self.additional_params)
         return etree.fromstring(u.read())
 
     def readString(self, st):
