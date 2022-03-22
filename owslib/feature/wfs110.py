@@ -26,7 +26,7 @@ from owslib.ows import (
     Constraint,
     Parameter,
     OperationsMetadata,
-    BoundingBox
+    BoundingBox,
 )
 from owslib.fes import FilterCapabilities
 from owslib.crs import Crs
@@ -66,7 +66,7 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         auth=None,
         additional_params=None,
     ):
-        """ overridden __new__ method
+        """overridden __new__ method
 
         @type url: string
         @param url: url of WFS capabilities document
@@ -157,9 +157,7 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         if val is not None:
             self.identification = ServiceIdentification(val, self.owscommon.namespace)
         # ServiceProvider
-        val = self._capabilities.find(
-            nspath_eval("ows:ServiceProvider", namespaces)
-        )
+        val = self._capabilities.find(nspath_eval("ows:ServiceProvider", namespaces))
         if val is not None:
             self.provider = ServiceProvider(val, self.owscommon.namespace)
         # ServiceOperations metadata
@@ -198,7 +196,9 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         )
         if features is not None:
             for feature in features:
-                cm = ContentMetadata(feature, parse_remote_metadata, headers=self.headers, auth=self.auth)
+                cm = ContentMetadata(
+                    feature, parse_remote_metadata, headers=self.headers, auth=self.auth
+                )
                 self.contents[cm.id] = cm
 
         # exceptions
@@ -353,20 +353,20 @@ class WebFeatureService_1_1_0(WebFeatureService_):
                 propertyname=propertyname,
                 maxfeatures=maxfeatures,
                 outputFormat=outputFormat,
-                method='Post',
+                method="Post",
                 startindex=startindex,
                 sortby=sortby,
             )
 
         u = openURL(
-                base_url,
-                data,
-                method,
-                timeout=self.timeout,
-                headers=self.headers,
-                auth=self.auth,
-                additional_params=self.additional_params
-            )
+            base_url,
+            data,
+            method,
+            timeout=self.timeout,
+            headers=self.headers,
+            auth=self.auth,
+            additional_params=self.additional_params,
+        )
 
         # check for service exceptions, rewrap, and return
         # We're going to assume that anything with a content-length > 32k
@@ -413,7 +413,9 @@ class ContentMetadata(AbstractContentMetadata):
     Implements IMetadata.
     """
 
-    def __init__(self, elem, parse_remote_metadata=False, timeout=30, headers=None, auth=None):
+    def __init__(
+        self, elem, parse_remote_metadata=False, timeout=30, headers=None, auth=None
+    ):
         """."""
         super(ContentMetadata, self).__init__(headers=headers, auth=auth)
         self.id = testXMLValue(elem.find(nspath_eval("wfs:Name", namespaces)))
@@ -487,10 +489,16 @@ class ContentMetadata(AbstractContentMetadata):
         """Parse remote metadata for MetadataURL of format 'text/xml' and add it as metadataUrl['metadata']"""
         for metadataUrl in self.metadataUrls:
             if (
-                metadataUrl["url"] is not None and metadataUrl["format"].lower() == "text/xml"
+                metadataUrl["url"] is not None
+                and metadataUrl["format"].lower() == "text/xml"
             ):
                 try:
-                    content = openURL(metadataUrl["url"], timeout=timeout, headers=self.headers, auth=self.auth)
+                    content = openURL(
+                        metadataUrl["url"],
+                        timeout=timeout,
+                        headers=self.headers,
+                        auth=self.auth,
+                    )
                     doc = etree.fromstring(content.read())
 
                     if metadataUrl["type"] == "FGDC":

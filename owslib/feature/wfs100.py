@@ -78,7 +78,7 @@ class WebFeatureService_1_0_0(object):
         auth=None,
         additional_params=None,
     ):
-        """ overridden __new__ method
+        """overridden __new__ method
 
         @type url: string
         @param url: url of WFS capabilities document
@@ -105,7 +105,7 @@ class WebFeatureService_1_0_0(object):
             username=username,
             password=password,
             auth=auth,
-            additional_params=self.additional_params,
+            additional_params=additional_params,
         )
         return obj
 
@@ -146,7 +146,7 @@ class WebFeatureService_1_0_0(object):
             self.version,
             headers=self.headers,
             auth=self.auth,
-            additional_params=additional_params,
+            additional_params=self.additional_params,
         )
         if xml:
             self._capabilities = reader.readString(xml)
@@ -300,14 +300,14 @@ class WebFeatureService_1_0_0(object):
         data = urlencode(request)
         log.debug("Making request: %s?%s" % (base_url, data))
         u = openURL(
-                base_url,
-                data,
-                method,
-                timeout=self.timeout,
-                headers=self.headers,
-                auth=self.auth,
-                additional_params=self.additional_params
-            )
+            base_url,
+            data,
+            method,
+            timeout=self.timeout,
+            headers=self.headers,
+            auth=self.auth,
+            additional_params=self.additional_params,
+        )
 
         # check for service exceptions, rewrap, and return
         # We're going to assume that anything with a content-length > 32k
@@ -418,7 +418,9 @@ class ContentMetadata(AbstractContentMetadata):
             wgs84 = pyproj.CRS.from_epsg(4326)
             try:
                 src_srs = pyproj.CRS.from_string(srs.text)
-                transformer = pyproj.Transformer.from_crs(src_srs, wgs84, always_xy=True)
+                transformer = pyproj.Transformer.from_crs(
+                    src_srs, wgs84, always_xy=True
+                )
                 mincorner = transformer.transform(b.attrib["minx"], b.attrib["miny"])
                 maxcorner = transformer.transform(b.attrib["maxx"], b.attrib["maxy"])
 
@@ -458,11 +460,15 @@ class ContentMetadata(AbstractContentMetadata):
         """Parse remote metadata for MetadataURL of format 'XML' and add it as metadataUrl['metadata']"""
         for metadataUrl in self.metadataUrls:
             if (
-                metadataUrl["url"] is not None and metadataUrl["format"].lower() == "xml"
+                metadataUrl["url"] is not None
+                and metadataUrl["format"].lower() == "xml"
             ):
                 try:
                     content = openURL(
-                        metadataUrl["url"], timeout=timeout, headers=self.headers, auth=self.auth
+                        metadataUrl["url"],
+                        timeout=timeout,
+                        headers=self.headers,
+                        auth=self.auth,
                     )
                     doc = etree.fromstring(content.read())
                     if metadataUrl["type"] == "FGDC":
@@ -473,9 +479,15 @@ class ContentMetadata(AbstractContentMetadata):
                             metadataUrl["metadata"] = None
                     elif metadataUrl["type"] == "TC211":
                         mdelem = doc.find(
-                            ".//" + util.nspath_eval("gmd:MD_Metadata", n.get_namespaces(["gmd"]))
+                            ".//"
+                            + util.nspath_eval(
+                                "gmd:MD_Metadata", n.get_namespaces(["gmd"])
+                            )
                         ) or doc.find(
-                            ".//" + util.nspath_eval("gmi:MI_Metadata", n.get_namespaces(["gmi"]))
+                            ".//"
+                            + util.nspath_eval(
+                                "gmi:MI_Metadata", n.get_namespaces(["gmi"])
+                            )
                         )
                         if mdelem is not None:
                             metadataUrl["metadata"] = MD_Metadata(mdelem)
