@@ -51,7 +51,8 @@ class WFSCapabilitiesReader(object):
                     "additional_params ('%s'), expected 'dict()'" % self.additional_params
                 )
             for param_key, param_value in self.additional_params.items():
-                qs.append((param_key, param_value))
+                if param_key not in params:
+                    qs.append((param_key, param_value))
 
         urlqs = urlencode(tuple(qs))
         return service_url.split("?")[0] + "?" + urlqs
