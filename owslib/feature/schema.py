@@ -36,6 +36,7 @@ def get_schema(
     :param int timeout: request timeout
     :param str username: service authentication username
     :param str password: service authentication password
+    :param dict additional_params: key/value pairs for optional request parameters
     :param Authentication auth: instance of owslib.util.Authentication
     """
     if auth:
