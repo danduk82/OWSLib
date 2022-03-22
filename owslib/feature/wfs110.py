@@ -216,7 +216,6 @@ class WebFeatureService_1_1_0(WebFeatureService_):
             timeout=self.timeout,
             headers=self.headers,
             auth=self.auth,
-            additional_params=self.additional_params,
         )
 
     def items(self):
@@ -365,7 +364,6 @@ class WebFeatureService_1_1_0(WebFeatureService_):
             timeout=self.timeout,
             headers=self.headers,
             auth=self.auth,
-            additional_params=self.additional_params,
         )
 
         # check for service exceptions, rewrap, and return

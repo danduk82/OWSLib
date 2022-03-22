@@ -68,7 +68,7 @@ class WFSCapabilitiesReader(object):
             A timeout value (in seconds) for the request.
         """
         request = self.capabilities_url(url)
-        u = openURL(request, timeout=timeout, headers=self.headers, auth=self.auth, additional_params=self.additional_params)
+        u = openURL(request, timeout=timeout, headers=self.headers, auth=self.auth)
         return etree.fromstring(u.read())
 
     def readString(self, st):
