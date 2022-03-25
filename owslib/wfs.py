@@ -19,7 +19,7 @@ from .util import clean_ows_url, Authentication
 
 def WebFeatureService(url, version='1.0.0', xml=None,
                       parse_remote_metadata=False, timeout=30, username=None,
-                      password=None, headers=None, auth=None, additional_params = None):
+                      password=None, headers=None, auth=None, vendor_kwargs = None):
     ''' wfs factory function, returns a version specific WebFeatureService object
 
     @type url: string
@@ -48,14 +48,14 @@ def WebFeatureService(url, version='1.0.0', xml=None,
         return wfs100.WebFeatureService_1_0_0(
             clean_url, version, xml, parse_remote_metadata,
             timeout=timeout, headers=headers, auth=auth,
-            additional_params=additional_params)
+            vendor_kwargs=vendor_kwargs)
     elif version in ['1.1', '1.1.0']:
         return wfs110.WebFeatureService_1_1_0(
             clean_url, version, xml, parse_remote_metadata,
             timeout=timeout, headers=headers, auth=auth,
-            additional_params=additional_params)
+            vendor_kwargs=vendor_kwargs)
     elif version in ['2.0', '2.0.0']:
         return wfs200.WebFeatureService_2_0_0(
             clean_url, version, xml, parse_remote_metadata,
             timeout=timeout, headers=headers, auth=auth,
-            additional_params=additional_params)
+            vendor_kwargs=vendor_kwargs)

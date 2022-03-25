@@ -57,7 +57,7 @@ class WebFeatureService_2_0_0(WebFeatureService_):
         username=None,
         password=None,
         auth=None,
-        additional_params=None,
+        vendor_kwargs=None,
     ):
         """ overridden __new__ method
 
@@ -72,7 +72,7 @@ class WebFeatureService_2_0_0(WebFeatureService_):
         @param username: service authentication username
         @param password: service authentication password
         @param auth: instance of owslib.util.Authentication
-        @param additional_params: Dict() key/value pairs for optional request parameters
+        @param vendor_kwargs: Dict() key/value pairs for optional request parameters
         @return: initialized WebFeatureService_2_0_0 object
         """
         obj = object.__new__(self)
@@ -86,7 +86,7 @@ class WebFeatureService_2_0_0(WebFeatureService_):
             username=username,
             password=password,
             auth=auth,
-            additional_params=additional_params,
+            vendor_kwargs=vendor_kwargs,
         )
         return obj
 
@@ -108,7 +108,7 @@ class WebFeatureService_2_0_0(WebFeatureService_):
         username=None,
         password=None,
         auth=None,
-        additional_params=None,
+        vendor_kwargs=None,
     ):
         """Initialize."""
         if auth:
@@ -125,12 +125,12 @@ class WebFeatureService_2_0_0(WebFeatureService_):
         self.timeout = timeout
         self.headers = headers
         self._capabilities = None
-        self.additional_params = additional_params
+        self.vendor_kwargs = vendor_kwargs
         reader = WFSCapabilitiesReader(
             self.version,
             headers=self.headers,
             auth=self.auth,
-            additional_params=self.additional_params,
+            vendor_kwargs=self.vendor_kwargs,
         )
         if xml:
             self._capabilities = reader.readString(xml)
