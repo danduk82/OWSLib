@@ -15,7 +15,7 @@ class WFSCapabilitiesReader(object):
         password=None,
         headers=None,
         auth=None,
-        additional_params=None,
+        **kwargs,
     ):
         """Initialize"""
         self.headers = headers
@@ -27,7 +27,10 @@ class WFSCapabilitiesReader(object):
         self.auth = auth or Authentication(username, password)
         self.version = version
         self._infoset = None
-        self.additional_params = additional_params
+        self.vendor_kwargs = {}
+        if kwargs:
+            for kw in kwargs:
+                self.vendor_kwargs[kw] = kwargs[kw]
 
     def capabilities_url(self, service_url):
         """Return a capabilities url
@@ -45,12 +48,12 @@ class WFSCapabilitiesReader(object):
         if "version" not in params:
             qs.append(("version", self.version))
 
-        if self.additional_params:
-            if not isinstance(self.additional_params, dict):
+        if self.vendor_kwargs:
+            if not isinstance(self.vendor_kwargs, dict):
                 raise ValueError(
-                    "additional_params ('%s'), expected 'dict()'" % self.additional_params
+                    "vendor_kwargs ('%s'), expected 'dict()'" % self.vendor_kwargs
                 )
-            for param_key, param_value in self.additional_params.items():
+            for param_key, param_value in self.vendor_kwargs.items():
                 if param_key not in params:
                     qs.append((param_key, param_value))
 
