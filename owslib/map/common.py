@@ -54,13 +54,9 @@ class WMSCapabilitiesReader(object):
             qs.append(('version', self.version))
 
         if self.vendor_kwargs:
-            if not isinstance(self.vendor_kwargs, dict):
-                raise ValueError(
-                    "vendor_kwargs ('%s'), expected 'dict()'" % self.vendor_kwargs
-                )
-            for param_key, param_value in self.vendor_kwargs.items():
-                if param_key not in params:
-                    qs.append((param_key, param_value))
+             for kw in self.vendor_kwargs:
+                if kw not in params:
+                    qs.append((kw, self.vendor_kwargs[kw]))
 
         urlqs = urlencode(tuple(qs))
         return service_url.split('?')[0] + '?' + urlqs

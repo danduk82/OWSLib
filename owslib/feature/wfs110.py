@@ -64,7 +64,7 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         username=None,
         password=None,
         auth=None,
-        vendor_kwargs=None,
+        **kwargs,
     ):
         """ overridden __new__ method
 
@@ -79,10 +79,14 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         @param username: service authentication username
         @param password: service authentication password
         @param auth: instance of owslib.util.Authentication
-        @param vendor_kwargs: Dict() key/value pairs for optional request parameters
+        @param **kwargs: key/value pairs for optional request parameters
         @return: initialized WebFeatureService_1_1_0 object
         """
         obj = object.__new__(self)
+        vendor_kwargs = {}
+        if kwargs:
+            for kw in kwargs:
+                vendor_kwargs[kw] = kwargs[kw]
         obj.__init__(
             url,
             version,
@@ -93,7 +97,7 @@ class WebFeatureService_1_1_0(WebFeatureService_):
             username=username,
             password=password,
             auth=auth,
-            vendor_kwargs=vendor_kwargs,
+            **vendor_kwargs,
         )
         return obj
 
@@ -115,7 +119,7 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         username=None,
         password=None,
         auth=None,
-        vendor_kwargs=None,
+        **kwargs,
     ):
         """Initialize."""
         if auth:
@@ -131,13 +135,16 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         self.headers = headers
         self.timeout = timeout
         self._capabilities = None
-        self.vendor_kwargs = vendor_kwargs
+        self.vendor_kwargs = {}
+        if kwargs:
+            for kw in kwargs:
+                self.vendor_kwargs[kw] = kwargs[kw]
         self.owscommon = OwsCommon("1.0.0")
         reader = WFSCapabilitiesReader(
             self.version,
             headers=self.headers,
             auth=self.auth,
-            vendor_kwargs=self.vendor_kwargs,
+            **self.vendor_kwargs,
         )
         if xml:
             self._capabilities = reader.readString(xml)
