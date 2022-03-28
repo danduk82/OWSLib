@@ -18,6 +18,7 @@ from owslib.util import (
 )
 from owslib.etree import etree
 from owslib.fgdc import Metadata
+from owslib.feature.schema import get_schema
 from owslib.iso import MD_Metadata
 from owslib.ows import (
     OwsCommon,
@@ -410,6 +411,13 @@ class WebFeatureService_1_1_0(WebFeatureService_):
             if item.name == name:
                 return item
         raise KeyError("No operation named %s" % name)
+
+    def get_schema(self, typename):
+        """
+        Get layer schema compatible with :class:`fiona` schema object
+        """
+
+        return get_schema(self.url, typename, self.version, auth=self.auth, **self.vendor_kwargs)
 
 
 class ContentMetadata(AbstractContentMetadata):
